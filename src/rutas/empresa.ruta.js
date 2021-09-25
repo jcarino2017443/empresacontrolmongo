@@ -10,6 +10,7 @@ api.put("/editarEmpresas/:id", md_Auth.ensureAuth, empresaContrador.editarEmpres
 api.delete("/eliminarEmpresa/:id", md_Auth.ensureAuth, empresaContrador.eliminarEmpresas)
 api.get("/buscarEmpresas", md_Auth.ensureAuth, empresaContrador.encontrarEmpresa),
 api.get("/nombreEmpleado", empresaContrador.buscarNombre);
+api.delete("/eliminarFull/:id", md_Auth.ensureAuth, empresaContrador.EliminarTodo)
 api.get("/idEmpresa/:id", md_Auth.ensureAuth, empresaContrador.empresaId);
 
 module.exports = api;

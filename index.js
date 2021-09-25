@@ -15,3 +15,5 @@ moongose.connect('mongodb+srv://jeffrey:divertido19@basededatos.bgvve.mongodb.ne
     console.log(err)
 })
 //mongodb://localhost:27017/Curso
+//
+//process.env.PORT || puerto,

@@ -31,7 +31,7 @@ function login(req, res) {
                     }
                 })
             }else{
-                res.status(400).send({mensaje: "error al buscar el usuario"})
+                res.status(400).send({mensaje: "El usuario no existe"})
             }
         })
     }
@@ -94,17 +94,61 @@ function updateUsers(req, res) {
             if(err) res.status(500).send({mensaje: "Error en la peticion de actualizar"});
                 return res.status(200).send({actualizado})
         })
+       
+}
+function eliminarUser(req, res) {
+    var params = req.body;
+    var idUser = req.params.id;
+
+    Usuarios.findByIdAndDelete(idUser, (err, usuarioEliminado)=>{
+        if(err) res.status(500).send({mensaje: "Error en la peticion de actualizar"});
+        return res.status(200).send({usuarioEliminado})
+
+    })
     
+}
 
+function  agregarUsuarioAdmin (req,res){
+        var usuarioModel = new Usuarios();
+        var passwordSecreta = '123456';
 
+        usuarioModel.nombre = "Gabriel";
+        usuarioModel.username = "Gcarino-2017443";
+        usuarioModel.email = "jcarino-2017443@kinal.edu.gt";
+        usuarioModel.password = passwordSecreta;
+        usuarioModel.rol = "Rol_Admin";
+        usuarioModel.imagen = null;
 
+        Usuarios.find({$or: [
+            {email: usuarioModel.email},
+            {username: usuarioModel.username}
+        ]}).exec((err, usuarioEncontrado)=>{
+            if(err) return res.status(400).send({mensaje: "Error en la peticion"})
+            if(usuarioEncontrado && usuarioEncontrado.length >= 1){
+                return res.status(500).send({mensaje: "Esta funcion ya fue dada de baja"});
 
-    
+            }else{
+                bcrypt.hash(passwordSecreta,null,null,(err, encriptacion)=>{
+                    usuarioModel.password = encriptacion;
+                    if(err){
+                        return res.status(400).send({mensaje: "Error en la peticion hash"});
+                    } else{
+                        usuarioModel.save((err, adminCreado)=>{
+                            if(err) return res.status(500).send({mensaje: "error al guardar"});
+                            return res.status(200).send({adminCreado})
+                        })
+                    }
+
+                })
+            }
+        })
 }
 
 module.exports = {
     saveUsers,
     login,
     updateUsers,
-    prueba
+    prueba,
+    agregarUsuarioAdmin,
+    eliminarUser
 }

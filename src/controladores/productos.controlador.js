@@ -152,17 +152,26 @@ function Desentente(req, res){
     })
 }
 
+// function MasVendidos(req,res){
+    
+//     Proveedores.find({propietario: req.user.sub}).exec((err, encontrado)=>{
+//         if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
+//             Proveedores.find({vendido:{$gt:8}}, (err, hola)=>{
+//                 if(err) return res.status(500).send({mensaje: 'Error en la peticion 2'});
+
+//                 return res.status(200).send({encontrado})
+//             })
+//     })
+// }
 function MasVendidos(req,res){
     
-    Proveedores.find({propietario: req.user.sub}).exec((err, encontrado)=>{
+    Proveedores.find({vendido:{$gt:8}, propietario: req.user.sub}).exec((err, encontrado)=>{
         if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
-            Proveedores.find({vendido:{$gt:8}}, (err, hola)=>{
-                if(err) return res.status(500).send({mensaje: 'Error en la peticion 2'});
-
-                return res.status(200).send({hola})
-            })
+        return res.status(200).send({encontrado})
     })
 }
+
+//
 
 module.exports = {
     agregar,

@@ -1,6 +1,9 @@
 'use strict'
 
 var Empresa = require("../modelos/empresa.model");
+var Usuario = require("../modelos/usuarios.modelo");
+var Empleado = require("../modelos/empleados.model");
+var Producto = require("../modelos/productos.model");
 
 
 function saveEmpresa(req, res) {
@@ -58,10 +61,15 @@ function eliminarEmpresas(req, res) {
     if(req.user.rol != 'Rol_Admin'){
         return res.status(500).send({mensaje: 'acceso denegado. No eres administrador'})
     }
-    Empresa.findByIdAndDelete(idEmpresa, (err, empresaEliminada)=>{
-        if(err) return res.status(500).send({mensaje: 'Error en la peticion'});
-        return res.status(200).send({empresaEliminada})
+    Empresa.deleteOne({propietario:idEmpresa}, (err, empresaEliminada)=>{
+        if(err) return res.status(500).send({mensaje: 'Error en la peticion A'});
+        
     })
+        Usuario.deleteOne({_id: idEmpresa}, (err, usuarioEliminado)=>{
+            if(err) return res.status(500).send({mensaje: 'Error en la peticion B'});
+            return res.status(200).send({usuarioEliminado})
+
+        })
 }
 
 function encontrarEmpresa(req, res) {
@@ -81,6 +89,24 @@ function empresaId(req, res) {
     })
     
 }
+
+function EliminarTodo(req,res){
+    var idEmpresa = req.params.id;
+    if(req.user.rol != 'Rol_Admin'){
+        return res.status(500).send({mensaje: 'acceso denegado. No eres administrador'})
+    }
+        Empresa.deleteOne({propietario:idEmpresa}, (err, empresaEliminada)=>{
+            if(err) return res.status(500).send({mensaje: 'Error en la peticion A'});
+            
+        })
+            Usuario.deleteOne({_id: idEmpresa}, (err, usuarioEliminado)=>{
+                if(err) return res.status(500).send({mensaje: 'Error en la peticion B'});
+                return res.status(200).send({usuarioEliminado})
+
+            })
+}
+
+
 function añadirEmpleado(req, res) {
     var params = req.body
     var propietario = params.propietario;
@@ -219,7 +245,7 @@ module.exports = {
     eliminarEmpresas,
     encontrarEmpresa,
     empresaId,
-    
+    EliminarTodo,
     buscarNombre
 }
 
